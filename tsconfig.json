@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "es2016",
     "lib": ["es6", "dom"],
-    "module": "esnext",
+    "module": "NodeNext",
     "rootDir": "src",
     "resolveJsonModule": true,
-    "outDir": "build",
+    "outDir": "dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
