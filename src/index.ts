@@ -81,7 +81,7 @@ server.on('connection', (server) => {
     duplex.write(`prnt_scrn ${data}`, 'base64');
   });
 
-  server.send(`Connected...`);
+  duplex.write(`Response: Connected...`, 'base64');
 
   duplex.on('close', function () {
     console.log('The duplex channel has closed');
