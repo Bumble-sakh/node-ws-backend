@@ -9,3 +9,7 @@ export enum COMMANDS {
   'DRAW_SQUARE' = 'draw_square',
   'PRNT_SCRN' = 'prnt_scrn',
 }
+
+export enum ERRORS {
+  'REGION_ERROR' = 'region_error',
+}

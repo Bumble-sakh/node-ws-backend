@@ -1,19 +1,25 @@
-import { screen, FileType, Region } from '@nut-tree/nut-js';
-import { mouse, Image } from '@nut-tree/nut-js';
+import { screen, Region } from '@nut-tree/nut-js';
+import { mouse } from '@nut-tree/nut-js';
 import Jimp from 'jimp';
-import { Blob, Buffer } from 'node:buffer';
+import { ERRORS } from '../constants/constants';
+import { emitter } from '../messageReducer';
 
 export const printScreen = async () => {
-  const FILE_PATH = './screenshot';
   const { x, y } = await mouse.getPosition();
 
   const region = new Region(x - 100, y - 100, 200, 200);
 
-  await screen.captureRegion(`screen`, region, FileType.PNG, FILE_PATH, 'region-');
+  try {
+    const regionImage = await screen.grabRegion(region);
 
-  const image = await Jimp.read('./screenshot/region-screen.png');
+    const rgbImage = await regionImage.toRGB();
 
-  const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+    const image = new Jimp(rgbImage);
 
-  return buffer.toString('base64');
+    const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+    return buffer.toString('base64');
+  } catch (error) {
+    emitter.emit(ERRORS.REGION_ERROR, error);
+  }
 };

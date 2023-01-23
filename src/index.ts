@@ -1,7 +1,7 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import dotenv from 'dotenv';
 import { emitter, messageReducer } from './messageReducer';
-import { COMMANDS } from './constants/constants';
+import { COMMANDS, ERRORS } from './constants/constants';
 import { getPosition, moveDown, moveLeft, moveUp, moveRight } from './commands/mouse';
 import { circle, rectangle, square } from './commands/draw';
 import { printScreen } from './commands/printScreen';
@@ -77,11 +77,18 @@ server.on('connection', (server) => {
   emitter.on(COMMANDS.PRNT_SCRN, async () => {
     const data = await printScreen();
 
-    console.log(`Response: prnt_scrn ${data}`);
-    duplex.write(`prnt_scrn ${data}`, 'base64');
+    if (data) {
+      console.log(`Response: prnt_scrn ${data}`);
+      duplex.write(`prnt_scrn ${data}`, 'base64');
+    }
   });
 
-  duplex.write(`Response: Connected...`, 'base64');
+  emitter.on(ERRORS.REGION_ERROR, (error) => {
+    console.error(error.message);
+    duplex.write(`Server_error`, 'base64');
+  });
+
+  duplex.write(`Connected...`, 'base64');
 
   duplex.on('close', function () {
     console.log('The duplex channel has closed');
